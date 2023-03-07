@@ -1,14 +1,24 @@
+import os
 import random
 from tkinter import *
+from pygame import mixer
+mixer.init()
 
 window = Tk()
 w = 1000
 h = 600
 strength = 4
+window.resizable(False, False)
 window.geometry(str(w) + 'x' + str(h))
 
 canvas = Canvas(window, width=w, height=h)
 canvas.place(in_=window, x=0, y=0)
+
+
+def play_sound(name):
+    mixer.music.unload()
+    mixer.music.load(os.path.join(os.path.dirname(__file__), 'sounds', name))
+    mixer.music.play()
 
 
 class Player:
@@ -69,16 +79,23 @@ player = Player()
 target = Target()
 score = 0
 enemies = [Enemy()]
+
 is_failed = False
 
 
 def restart():
-    global player, target, score, enemies
+    global player, target, score, enemies, is_failed, restart_button
     player = Player()
     target = Target()
     score = 0
     enemies = [Enemy()]
+    is_failed = False
+    restart_button.place_forget()
+    mixer.music.unload()
     game()
+
+
+restart_button = Button(bg="black", fg='white', text="еще раз", command=restart)
 
 
 def game():
@@ -90,8 +107,11 @@ def game():
         if (enemy.x - player.x) ** 2 + (enemy.y - player.y) ** 2 <= 100:
             is_failed = True
             break
+    if player.x < -10 or player.x > 1010 or player.y > 610 or player.y < -10:
+        is_failed = True
     if (target.x - player.x) ** 2 + (target.y - player.y) ** 2 <= 100:
         score += 1
+        play_sound(f'collect\\{random.randint(1,3)}.mp3')
         enemies.append(Enemy())
         print(score)
         target = Target()
@@ -103,9 +123,9 @@ def game():
         window.after(5, game)
     else:
         canvas.delete("all")
+        play_sound(f'fail\\{random.randint(1,4)}.mp3')
         canvas.create_text(w / 2, h / 2, text="Проигрыш!", font='Arial 28', fill='red')
         canvas.create_text(w / 2, h / 2 + 50, text="Счёт: " + str(score), font='Arial 22', fill="green")
-        restart_button = Button(bg="black", fg='white', text="еще раз", command=restart)
         restart_button.place(x=w/2-50, y=h/2 + 100, width=100, height=50)
 
 
