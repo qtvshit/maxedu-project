@@ -11,8 +11,9 @@ strength = 4
 window.resizable(False, False)
 window.geometry(str(w) + 'x' + str(h))
 
-canvas = Canvas(window, width=w, height=h)
+canvas = Canvas(window, width=w, height=h, bg="white")
 canvas.place(in_=window, x=0, y=0)
+controls_image = PhotoImage(file="controls.png")
 
 
 def play_sound(name):
@@ -47,6 +48,8 @@ class Player:
         window.after(150, self.toggle_is_jumping)
 
     def move(self, direction):
+        global is_started
+        is_started = True
         if direction == "up":
             self.y -= strength
         elif direction == "down":
@@ -79,12 +82,12 @@ player = Player()
 target = Target()
 score = 0
 enemies = [Enemy()]
-
+is_started = False
 is_failed = False
 
 
 def restart():
-    global player, target, score, enemies, is_failed, restart_button
+    global player, target, score, enemies, is_failed, restart_button, is_started
     player = Player()
     target = Target()
     score = 0
@@ -92,6 +95,7 @@ def restart():
     is_failed = False
     restart_button.place_forget()
     mixer.music.unload()
+    is_started = False
     game()
 
 
@@ -101,6 +105,9 @@ restart_button = Button(bg="black", fg='white', text="еще раз", command=re
 def game():
     global score, target, is_failed
     canvas.delete("all")
+    print(is_started, not is_started)
+    if not is_started:
+        canvas.create_image(100, h-100, image=controls_image)
     target.place()
     for enemy in enemies:
         enemy.place()
@@ -116,7 +123,7 @@ def game():
         print(score)
         target = Target()
     if not is_failed:
-        if not player.is_jumping:
+        if not player.is_jumping and is_started:
             player.y += 2
         canvas.create_oval(player.x - 10, player.y - 10, player.x + 10, player.y + 10, fill="#131313")
         canvas.create_text(50, 10, text="Score: " + str(score), font='Arial 14', fill='black')
