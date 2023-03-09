@@ -17,6 +17,7 @@ canvas.place(in_=window, x=0, y=0)
 controls_image = PhotoImage(file="controls.png")
 
 collected_images = [PhotoImage(file="img/collected_1.png"), PhotoImage(file="img/collected_2.png")]
+failed_images = [PhotoImage(file="img/failed_1.png"), PhotoImage(file="img/failed_2.png"), PhotoImage(file="img/failed_3.png")]
 
 
 def play_sound(name):
@@ -142,6 +143,7 @@ def game():
     else:
         canvas.delete("all")
         play_sound(f'fail\\{random.randint(1,5)}.mp3')
+        canvas.create_image(100, h-100, image=failed_images[random.randint(0, len(failed_images) - 1)], tags="failed_img")
         canvas.create_text(w / 2, h / 2, text="Проигрыш!", font='Arial 28', fill='red')
         canvas.create_text(w / 2, h / 2 + 50, text="Счёт: " + str(score), font='Arial 22', fill="green")
         restart_button.place(x=w/2-50, y=h/2 + 100, width=100, height=50)
