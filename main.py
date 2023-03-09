@@ -118,7 +118,7 @@ def game():
         is_failed = True
     if (target.x - player.x) ** 2 + (target.y - player.y) ** 2 <= 100:
         score += 1
-        play_sound(f'collect\\{random.randint(1,3)}.mp3')
+        play_sound(f'collect\\{random.randint(1,4)}.mp3')
         enemies.append(Enemy())
         print(score)
         target = Target()
@@ -130,7 +130,7 @@ def game():
         window.after(5, game)
     else:
         canvas.delete("all")
-        play_sound(f'fail\\{random.randint(1,4)}.mp3')
+        play_sound(f'fail\\{random.randint(1,5)}.mp3')
         canvas.create_text(w / 2, h / 2, text="Проигрыш!", font='Arial 28', fill='red')
         canvas.create_text(w / 2, h / 2 + 50, text="Счёт: " + str(score), font='Arial 22', fill="green")
         restart_button.place(x=w/2-50, y=h/2 + 100, width=100, height=50)
