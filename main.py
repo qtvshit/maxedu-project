@@ -16,6 +16,8 @@ canvas = Canvas(window, width=w, height=h, bg="white")
 canvas.place(in_=window, x=0, y=0)
 controls_image = PhotoImage(file="controls.png")
 
+collected_images = [PhotoImage(file="img/collected_1.png"), PhotoImage(file="img/collected_2.png")]
+
 
 def play_sound(name):
     mixer.music.unload()
@@ -76,7 +78,7 @@ class Enemy:
         self.y = random.randint(0, h)
 
     def place(self):
-        canvas.create_oval(self.x - 5, self.y - 5, self.x + 5, self.y + 5, fill="red")
+        canvas.create_oval(self.x - 5, self.y - 5, self.x + 5, self.y + 5, fill="red", tags="enemy")
 
 
 player = Player()
@@ -85,6 +87,12 @@ score = 0
 enemies = [Enemy()]
 is_started = False
 is_failed = False
+collected_img = None
+
+
+def reset_collected_img():
+    global collected_img
+    collected_img = None
 
 
 def restart():
@@ -104,10 +112,12 @@ restart_button = Button(bg="black", fg='white', text="еще раз", command=re
 
 
 def game():
-    global score, target, is_failed
+    global score, target, is_failed, collected_img
     canvas.delete("all")
     if not is_started:
         canvas.create_image(100, h-100, image=controls_image)
+    if collected_img:
+        canvas.create_image(100, h-100, image=collected_img, tags="collect_img")
     target.place()
     for enemy in enemies:
         enemy.place()
@@ -118,13 +128,15 @@ def game():
         is_failed = True
     if (target.x - player.x) ** 2 + (target.y - player.y) ** 2 <= 100:
         score += 1
+        collected_img = collected_images[random.randint(0, len(collected_images) - 1)]
+        window.after(1000, reset_collected_img)
         play_sound(f'collect\\{random.randint(1,4)}.mp3')
         enemies.append(Enemy())
         target = Target()
     if not is_failed:
         if not player.is_jumping and is_started:
             player.y += 2
-        canvas.create_oval(player.x - 10, player.y - 10, player.x + 10, player.y + 10, fill="#131313")
+        canvas.create_oval(player.x - 10, player.y - 10, player.x + 10, player.y + 10, fill="#131313", tags="player")
         canvas.create_text(50, 10, text="Score: " + str(score), font='Arial 14', fill='black')
         window.after(5, game)
     else:
