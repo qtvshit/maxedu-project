@@ -10,6 +10,7 @@ h = 600
 strength = 4
 window.resizable(False, False)
 window.geometry(str(w) + 'x' + str(h))
+mixer.music.set_volume(0.2)
 
 canvas = Canvas(window, width=w, height=h, bg="white")
 canvas.place(in_=window, x=0, y=0)
