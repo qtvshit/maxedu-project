@@ -106,7 +106,6 @@ restart_button = Button(bg="black", fg='white', text="еще раз", command=re
 def game():
     global score, target, is_failed
     canvas.delete("all")
-    print(is_started, not is_started)
     if not is_started:
         canvas.create_image(100, h-100, image=controls_image)
     target.place()
@@ -121,7 +120,6 @@ def game():
         score += 1
         play_sound(f'collect\\{random.randint(1,4)}.mp3')
         enemies.append(Enemy())
-        print(score)
         target = Target()
     if not is_failed:
         if not player.is_jumping and is_started:
