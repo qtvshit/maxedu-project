@@ -156,7 +156,6 @@ def get_key(*args):
     return args[0][0].keysym
 
 
-window.bind("<Key-Right>", lambda *args: player.move("right"))
 window.bind("<KeyRelease>", lambda *args: player.movement(get_key(args)))
 
 window.mainloop()
